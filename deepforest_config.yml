@@ -2,10 +2,10 @@
 
 #cpu workers for data loaders
 #Dataloaders
-workers: 1
-gpus: 
+workers: 8
+gpus: 0
 accelerator:
-batch_size: 1
+batch_size: 4
 
 #Non-max supression of overlapping predictions
 nms_thresh: 0.05
@@ -13,23 +13,25 @@ score_thresh: 0.1
 
 train:
 
-    csv_file:
-    root_dir:
+    csv_file: /misc/lu/fast_scratch/visi/beaulima/crim/projects/effigis/effigis-data/data_process/train.csv
+    root_dir: /misc/lu/fast_scratch/visi/beaulima/crim/projects/effigis/effigis-data/data_process/naperville_chips_1024/train
     
     #Optomizer  initial learning rate
     lr: 0.001
 
     #Print loss every n epochs
-    epochs: 1
+    epochs: 10
     #Useful debugging flag in pytorch lightning, set to True to get a single batch of training to test settings.
     fast_dev_run: False
     #pin images to GPU memory for fast training. This depends on GPU size and number of images.
     preload_images: False
+    # Scale dynamic range of images to 0-1. The size of the list should match the number of bands in the images.
+    scale_dynamic_range_values: [255,255, 255]
     
 validation:
     #callback args
-    csv_file: 
-    root_dir:
+    csv_file: /misc/lu/fast_scratch/visi/beaulima/crim/projects/effigis/effigis-data/data_process/valid.csv
+    root_dir: /misc/lu/fast_scratch/visi/beaulima/crim/projects/effigis/effigis-data/data_process/naperville_chips_1024/valid
     #Intersection over union evaluation
     iou_threshold: 0.4
     val_accuracy_interval: 5
