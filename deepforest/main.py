@@ -58,11 +58,9 @@ class deepforest(pl.LightningModule):
         self.create_model()
                 
         #Label encoder and decoder
-        if not len(label_dict) == num_classes:
-            raise ValueError(
-                'label_dict {} does not match requested number of classes {}, please supply a label_dict argument {{"label1":0, "label2":1, "label3":2 ... etc}} for each label in the dataset'.format(label_dict, num_classes)
-            )
-        
+        assert num_classes == len(label_dict), \
+            f"Number of classes {num_classes} must match length of label_dict {len(label_dict)}"
+
         self.label_dict = label_dict
         self.numeric_to_label_dict = {v: k for k, v in label_dict.items()}
         
@@ -173,7 +171,8 @@ class deepforest(pl.LightningModule):
                                  root_dir=root_dir,
                                  transforms=self.transforms(augment=augment),
                                  label_dict=self.label_dict,
-                                 preload_images=self.config["train"]["preload_images"])
+                                 preload_images=self.config["train"]["preload_images"],
+                                 scale_dynamic_range_values=self.config["train"]["scale_dynamic_range_values"],)
 
         data_loader = torch.utils.data.DataLoader(
             ds,
@@ -195,6 +194,7 @@ class deepforest(pl.LightningModule):
                                    root_dir=self.config["train"]["root_dir"],
                                    augment=True,
                                    shuffle=True,
+                                   train=True,
                                    batch_size=self.config["batch_size"])
 
         return loader
@@ -211,6 +211,7 @@ class deepforest(pl.LightningModule):
                                        root_dir=self.config["validation"]["root_dir"],
                                        augment=False,
                                        shuffle=False,
+                                       train=False,
                                        batch_size=self.config["batch_size"])
 
         return loader
