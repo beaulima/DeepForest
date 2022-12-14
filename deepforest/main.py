@@ -136,6 +136,7 @@ class deepforest(pl.LightningModule):
                                   accelerator=self.config["accelerator"],
                                   fast_dev_run=self.config["train"]["fast_dev_run"],
                                   callbacks=callbacks,
+                                  default_root_dir=self.config["trainer"]["default_root_dir"],
                                   **kwargs)
 
     def save_model(self, path):
